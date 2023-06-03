@@ -1,2 +1,2 @@
-# nest-backend
-pet project where i'm learning to nest
+# NEST BACKEND FOR SOCIAL NETWORK
+## PET PROJECT
