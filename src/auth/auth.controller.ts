@@ -4,20 +4,20 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 
 @ApiTags('Authorization')
-@Controller('auth')
+@Controller('identity')
 export class AuthController {
     constructor(private authService: AuthService) { }
 
     @ApiOperation({ summary: 'Login User' })
     @ApiResponse({ status: 200 })
-    @Post('/login')
+    @Post('/signin')
     login(@Body() userDto: CreateUserDto) {
         return this.authService.login(userDto)
     }
 
     @ApiOperation({ summary: 'Register User' })
     @ApiResponse({ status: 200 })
-    @Post('/registration')
+    @Post('/signup')
     registration(@Body() userDto: CreateUserDto) {
         return this.authService.registration(userDto)
     }

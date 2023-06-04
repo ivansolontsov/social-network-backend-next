@@ -30,7 +30,8 @@ export class AuthService {
     private async generateToken(user: User) {
         const payload = { email: user.email, id: user.id, roles: user.roles }
         return {
-            token: this.jwtService.sign(payload)
+            accessToken: this.jwtService.sign(payload, { expiresIn: '8h' }),
+            refreshToken: this.jwtService.sign({ id: payload.id }, { expiresIn: '4h' })
         }
     }
 
