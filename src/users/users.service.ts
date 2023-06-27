@@ -13,6 +13,11 @@ export class UsersService {
         private roleService: RolesService) { }
 
     async createUser(dto: CreateUserDto) {
+        const { email } = dto;
+        const isUserExists = await this.userRepository.findOne({ where: { email }, include: { all: true } })
+        if (isUserExists) {
+            throw new HttpException('User already exists', HttpStatus.BAD_REQUEST)
+        }
         const user = await this.userRepository.create(dto);
         const roles = await this.roleService.getRoleByValue('ADMIN')
         await user.$set('roles', [roles.id])
