@@ -13,7 +13,12 @@ export class PostService {
 
     async create(dto: CreatePostDto, image: any) {
         const fileName = await this.filesService.createFile(image);
-        const post = await this.postRepository.create({ ...dto, image: fileName })
+        const post = await this.postRepository.create({ ...dto, userId: Number(dto.userId), image: fileName })
         return post;
+    }
+
+    async getAll() {
+        const posts = await this.postRepository.findAll({ include: { all: true } })
+        return posts;
     }
 }

@@ -15,6 +15,8 @@ export class UsersController {
     constructor(private usersService: UsersService) { }
     @ApiOperation({ summary: 'Create User' })
     @ApiResponse({ status: 200, type: User })
+    @Roles("ADMIN")
+    @UseGuards(RolesGuard)
     @Post()
     create(@Body() userDto: CreateUserDto) {
         return this.usersService.createUser(userDto);
@@ -37,7 +39,6 @@ export class UsersController {
     addRole(@Body() dto: AddRoleDto) {
         return this.usersService.addRole(dto);
     }
-
 
     @ApiOperation({ summary: 'Ban a user' })
     @ApiResponse({ status: 200 })
