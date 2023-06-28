@@ -6,7 +6,4 @@ export class CreatePostDto {
 
     // @IsString({ message: 'Must to be a string' })
     readonly content: string;
-
-    // @IsNumber({}, { message: 'Must to be a number' })
-    readonly userId: string;
 } 

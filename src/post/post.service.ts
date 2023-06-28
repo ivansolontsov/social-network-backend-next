@@ -11,14 +11,26 @@ export class PostService {
         private filesService: FilesService
     ) { }
 
-    async create(dto: CreatePostDto, image: any) {
+    async create(dto: CreatePostDto, image: any, userId: number) {
         const fileName = await this.filesService.createFile(image);
-        const post = await this.postRepository.create({ ...dto, userId: Number(dto.userId), image: fileName })
+        const post = await this.postRepository.create({ ...dto, userId: Number(userId), image: fileName })
         return post;
     }
 
     async getAll() {
         const posts = await this.postRepository.findAll({ include: { all: true } })
-        return posts;
+        const postsViewModel = posts.map((post) => {
+            return {
+                id: post.id,
+                title: post.title,
+                text: post.content,
+                postCreatedDate: post.createdAt,
+                author: {
+                    id: post.author.id,
+                    name: post.author.firstName + ' ' + post.author.lastName,
+                }
+            }
+        })
+        return postsViewModel;
     }
 }

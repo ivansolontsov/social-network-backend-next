@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "./pipes/validation.pipe";
+import * as cors from 'cors';
 
 async function start() {
     const PORT = process.env.PORT || 5000;
@@ -19,7 +20,7 @@ async function start() {
 
     // app.useGlobalGuards([JwtAuthGuard])
     app.useGlobalPipes(new ValidationPipe())
-
+    app.use(cors());
     await app.listen(PORT, () => console.log('Server Started on port ' + PORT))
 }
 

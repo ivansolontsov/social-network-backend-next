@@ -19,8 +19,7 @@ export class PostController {
         @UploadedFile() image,
         @Request() req
     ) {
-        console.log(req.user.id)
-        return this.postService.create(dto, image)
+        return this.postService.create(dto, image, req.user.id)
     }
 
     @ApiOperation({ summary: 'Get All Posts' })
