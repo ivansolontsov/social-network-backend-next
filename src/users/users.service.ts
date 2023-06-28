@@ -5,12 +5,30 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from 'src/roles/roles.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import { BanUserDto } from './dto/ban-user.dto';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class UsersService {
-    constructor(
-        @InjectModel(User) private userRepository: typeof User,
-        private roleService: RolesService) { }
+    constructor(@InjectModel(User) private userRepository: typeof User,
+        private roleService: RolesService,
+        private filesService: FilesService
+    ) { }
+
+    async getUser(userId: number) {
+        const user = await this.userRepository.findByPk(userId);
+        if (user) {
+            return user;
+        }
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND)
+    }
+
+    async updateAvatar(userId: number, image: any) {
+        const fileName = await this.filesService.createFile(image);
+        const user = await this.userRepository.findByPk(userId);
+        user.avatar = fileName;
+        await user.save();
+        return 'Avatar Updated';
+    }
 
     async createUser(dto: CreateUserDto) {
         const { email } = dto;
@@ -19,7 +37,7 @@ export class UsersService {
             throw new HttpException('User already exists', HttpStatus.BAD_REQUEST)
         }
         const user = await this.userRepository.create(dto);
-        const roles = await this.roleService.getRoleByValue('ADMIN')
+        const roles = await this.roleService.getRoleByValue('USER')
         await user.$set('roles', [roles.id])
         user.roles = [roles]
         return user;
@@ -56,3 +74,5 @@ export class UsersService {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
 }
+
+

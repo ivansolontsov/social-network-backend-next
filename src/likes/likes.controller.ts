@@ -1,9 +1,10 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { LikesService } from './likes.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LikePostDto } from './dto/like-post.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@ApiTags('Like')
 @Controller('likes')
 export class LikesController {
     constructor(
