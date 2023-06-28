@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "nvidia",
+    "database": "postgres",
+    "port": "1232",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "nvidia",
+    "database": "postgres",
+    "port": "1232",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "root",
+    "database": "postgres",
+    "port": "5432",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
