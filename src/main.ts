@@ -7,6 +7,10 @@ import * as cors from 'cors';
 async function start() {
     const PORT = process.env.PORT || 5000;
     const app = await NestFactory.create(AppModule);
+    app.use(cors({
+        credentials: true,
+        origin: true
+    }))
 
     const config = new DocumentBuilder()
         .setTitle('Social Network')
@@ -20,7 +24,6 @@ async function start() {
 
     // app.useGlobalGuards([JwtAuthGuard])
     app.useGlobalPipes(new ValidationPipe())
-    app.use(cors());
     await app.listen(PORT, () => console.log('Server Started on port ' + PORT))
 }
 

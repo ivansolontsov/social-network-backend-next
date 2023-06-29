@@ -15,6 +15,7 @@ import { FriendsModule } from './friends/friends.module';
 import { LikesModule } from './likes/likes.module';
 import * as path from 'path'
 import { Likes } from "./likes/likes.model";
+import { UserFriends } from "./friends/user-friends.model";
 
 @Module({
     controllers: [],
@@ -34,7 +35,7 @@ import { Likes } from "./likes/likes.model";
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [User, Role, UserRoles, Post, Likes],
+            models: [User, Role, UserRoles, Post, Likes, UserFriends],
             autoLoadModels: true,
         }),
         UsersModule,
