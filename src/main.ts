@@ -7,10 +7,12 @@ import * as cors from 'cors';
 async function start() {
     const PORT = process.env.PORT || 5000;
     const app = await NestFactory.create(AppModule);
-    app.use(cors({
+
+    app.enableCors({
+        origin: ['http://localhost:3000', 'https://social-network-alpha-ten.vercel.app'],
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
-        origin: true
-    }))
+    });
 
     const config = new DocumentBuilder()
         .setTitle('Social Network')
