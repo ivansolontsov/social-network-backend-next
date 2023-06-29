@@ -50,6 +50,15 @@ export class UsersController {
         return this.usersService.updateAvatar(req.user.id, image);
     }
 
+    @ApiOperation({ summary: 'Get Current User Info' })
+    @ApiResponse({ status: 200, type: [User] })
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FileInterceptor('image'))
+    @Post('/updateBackground')
+    updateBackgorund(@Request() req, @UploadedFile() image) {
+        return this.usersService.updateBackground(req.user.id, image);
+    }
+
     // @ApiOperation({ summary: 'Give a role to user' })
     // @ApiResponse({ status: 200 })
     // @Roles("ADMIN")

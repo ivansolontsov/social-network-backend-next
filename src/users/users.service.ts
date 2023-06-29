@@ -17,7 +17,18 @@ export class UsersService {
     async getUser(userId: number) {
         const user = await this.userRepository.findByPk(userId);
         if (user) {
-            return user;
+            return {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                banned: user.banned,
+                banReason: user.banReason,
+                avatar: user.avatar,
+                background: user.background,
+                createdAt: user.createdAt,
+                updateAt: user.updatedAt,
+                email: user.email
+            };
         }
         throw new HttpException('User Not Found', HttpStatus.NOT_FOUND)
     }
@@ -25,9 +36,19 @@ export class UsersService {
     async updateAvatar(userId: number, image: any) {
         const fileName = await this.filesService.createFile(image);
         const user = await this.userRepository.findByPk(userId);
-        user.avatar = fileName;
+        const url = process.env.CDN_URL;
+        user.avatar = url + fileName;
         await user.save();
         return 'Avatar Updated';
+    }
+
+    async updateBackground(userId: number, image: any) {
+        const fileName = await this.filesService.createFile(image);
+        const user = await this.userRepository.findByPk(userId);
+        const url = process.env.CDN_URL;
+        user.background = url + fileName;
+        await user.save();
+        return 'Background Updated';
     }
 
     async createUser(dto: CreateUserDto) {

@@ -8,6 +8,8 @@ import { UserRoles } from "src/roles/user-roles.model";
 interface UserCreationAttrs {
     email: string;
     password: string;
+    firstName: string;
+    lastName: string;
 }
 
 @Table({ tableName: 'users' })
@@ -44,6 +46,10 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({ type: DataType.STRING, allowNull: true })
     avatar: string;
 
+    @ApiProperty({ example: 'url', description: "Background URL" })
+    @Column({ type: DataType.STRING, allowNull: true })
+    background: string;
+
     @BelongsToMany(() => Role, () => UserRoles)
     roles: Role[];
 
@@ -53,4 +59,3 @@ export class User extends Model<User, UserCreationAttrs> {
     @HasMany(() => Post)
     posts: Post[]
 }
-

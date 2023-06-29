@@ -28,6 +28,7 @@ export class PostService {
                 author: {
                     id: post.author.id,
                     name: post.author.firstName + ' ' + post.author.lastName,
+                    avatar: post.author.avatar
                 }
             }
         })
