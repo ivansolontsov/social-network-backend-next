@@ -3,7 +3,7 @@ import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "./pipes/validation.pipe";
 import * as cors from 'cors';
-import fs from 'fs';
+import * as fs from 'fs';
 
 
 
