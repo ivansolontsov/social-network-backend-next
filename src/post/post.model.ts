@@ -4,7 +4,6 @@ import { Likes } from "src/likes/likes.model";
 import { User } from "src/users/users.model";
 
 interface PostCreationAttrs {
-    title: string;
     content: string;
     userId: number;
     image: string;
@@ -15,10 +14,7 @@ export class Post extends Model<Post, PostCreationAttrs> {
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
 
-    @Column({ type: DataType.STRING, allowNull: false })
-    title: string;
-
-    @Column({ type: DataType.STRING, allowNull: false })
+    @Column({ type: DataType.TEXT, allowNull: false })
     content: string;
 
     @Column({ type: DataType.STRING })

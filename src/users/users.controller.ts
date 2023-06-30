@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UploadedFile, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -33,10 +33,18 @@ export class UsersController {
         return this.usersService.getAllUsers();
     }
 
+    @ApiOperation({ summary: 'Get User Info' })
+    @ApiResponse({ status: 200, type: [User] })
+    @UseGuards(JwtAuthGuard)
+    @Get('getUserById/:id')
+    getUserById(@Param('id') id) {
+        return this.usersService.getUser(id);
+    }
+
     @ApiOperation({ summary: 'Get Current User Info' })
     @ApiResponse({ status: 200, type: [User] })
     @UseGuards(JwtAuthGuard)
-    @Get('/getUser')
+    @Get('getUser')
     getUser(@Request() req) {
         return this.usersService.getUser(req.user.id);
     }
@@ -50,7 +58,7 @@ export class UsersController {
         return this.usersService.updateAvatar(req.user.id, image);
     }
 
-    @ApiOperation({ summary: 'Get Current User Info' })
+    @ApiOperation({ summary: 'Update Background' })
     @ApiResponse({ status: 200, type: [User] })
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('image'))
