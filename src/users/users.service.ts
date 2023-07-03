@@ -36,8 +36,7 @@ export class UsersService {
     async updateAvatar(userId: number, image: any) {
         const fileName = await this.filesService.createFile(image);
         const user = await this.userRepository.findByPk(userId);
-        const url = process.env.CDN_URL;
-        user.avatar = url + fileName;
+        user.avatar = fileName;
         await user.save();
         return 'Avatar Updated';
     }
@@ -45,8 +44,7 @@ export class UsersService {
     async updateBackground(userId: number, image: any) {
         const fileName = await this.filesService.createFile(image);
         const user = await this.userRepository.findByPk(userId);
-        const url = process.env.CDN_URL;
-        user.background = url + fileName;
+        user.background = fileName;
         await user.save();
         return 'Background Updated';
     }

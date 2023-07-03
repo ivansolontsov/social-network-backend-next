@@ -15,7 +15,11 @@ async function start() {
         cert: process.env.NODE_ENV == "production" && fs.readFileSync('/etc/letsencrypt/live/vm687554.vps.masterhost.tech/fullchain.pem'),
     };
 
-    const app = await NestFactory.create(AppModule, { httpsOptions });
+    const app = await NestFactory.create(AppModule,
+        process.env.NODE_ENV == 'production'
+            ? { httpsOptions }
+            : {}
+    );
 
 
     // Certificate is saved at: /etc/letsencrypt/live/vm687554.vps.masterhost.tech/fullchain.pem
