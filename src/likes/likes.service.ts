@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import { Likes } from './likes.model';
@@ -13,7 +13,16 @@ export class LikesService {
         private jwtService: JwtService,
     ) { }
 
-    async likePost(request: any, dto: LikePostDto) {
-        console.log(request, 'wow, this is like')
+    async likePost(dto: LikePostDto, userId: number) {
+        const isLikeAlreadyExists = await this.likeRepository.findOne({ where: { postId: dto.postId, userId: userId } })
+        if (isLikeAlreadyExists) throw new HttpException('Post already liked', HttpStatus.BAD_REQUEST)
+        const like = await this.likeRepository.create({ userId: userId, postId: dto.postId })
+        return like;
+    }
+    async unlikePost(dto: LikePostDto, userId: number) {
+        const like = await this.likeRepository.findOne({ where: { postId: dto.postId, userId: userId } })
+        if (!like) throw new HttpException('like not found', HttpStatus.BAD_REQUEST);
+        await this.likeRepository.destroy({ where: { postId: like.postId, userId: like.userId } })
+        return HttpStatus.ACCEPTED;;
     }
 }

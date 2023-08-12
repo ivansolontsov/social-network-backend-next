@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -26,16 +26,16 @@ export class PostController {
     @ApiResponse({ status: 200, type: [PostModel] })
     @UseGuards(JwtAuthGuard)
     @Get('getAll')
-    getAll() {
-        return this.postService.getAll();
+    getAll(@Req() req) {
+        return this.postService.getAll(req.user.id);
     }
 
     @ApiOperation({ summary: 'Get Posts by user id' })
     @ApiResponse({ status: 200, type: [PostModel] })
     @UseGuards(JwtAuthGuard)
     @Get('getPostsByUserId/:id')
-    getPostsByUserId(@Param('id') id: string) {
-        return this.postService.getPostsByUserId(Number(id));
+    getPostsByUserId(@Param('id') id: string, @Req() req) {
+        return this.postService.getPostsByUserId(Number(id), req.user.id);
     }
 
 }

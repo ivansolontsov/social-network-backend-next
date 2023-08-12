@@ -21,9 +21,10 @@ export class PostService {
         return post;
     }
 
-    async getAll() {
+    async getAll(userId: number) {
         const posts = await this.postRepository.findAll({ include: { all: true } })
         const postsViewModel = posts.map((post) => {
+            const isLikedByCurrentUser = post.likes.some((e) => e.userId === userId)
             return {
                 id: post.id,
                 text: post.content,
@@ -33,7 +34,8 @@ export class PostService {
                     name: post.author.firstName + ' ' + post.author.lastName,
                     avatar: post.author.avatar
                 },
-                likes: post.likes
+                likes: post.likes.length,
+                isLiked: isLikedByCurrentUser
             }
         })
         postsViewModel.sort((a, b) => {
@@ -42,9 +44,10 @@ export class PostService {
         return postsViewModel;
     }
 
-    async getPostsByUserId(id: number) {
+    async getPostsByUserId(id: number, userId: number) {
         const posts = await this.postRepository.findAll({ include: { all: true }, where: { userId: id } })
         const postsViewModel = posts.map((post) => {
+            const isLikedByCurrentUser = post.likes.some((e) => e.userId === userId)
             return {
                 id: post.id,
                 text: post.content,
@@ -55,6 +58,8 @@ export class PostService {
                     name: post.author.firstName + ' ' + post.author.lastName,
                     avatar: post.author.avatar
                 },
+                likes: post.likes.length,
+                isLiked: isLikedByCurrentUser
             }
         })
         postsViewModel.sort((a, b) => {

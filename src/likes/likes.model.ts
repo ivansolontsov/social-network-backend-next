@@ -4,10 +4,8 @@ import { Post } from "src/post/post.model";
 import { User } from "src/users/users.model";
 
 interface LikeCreationAttrs {
-    title: string;
-    content: string;
+    postId: number
     userId: number;
-    image: string;
 }
 
 @Table({ tableName: 'likes' })

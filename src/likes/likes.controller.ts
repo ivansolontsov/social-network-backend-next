@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
 import { LikesService } from './likes.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LikePostDto } from './dto/like-post.dto';
@@ -14,10 +14,20 @@ export class LikesController {
     @ApiOperation({ summary: 'Like Post' })
     @Post('/likePost')
     @UseGuards(JwtAuthGuard)
-    createPost(
-        @Req() request,
+    likePost(
         @Body() dto: LikePostDto,
+        @Req() request,
     ) {
-        return this.likesServices.likePost(request, dto);
+        return this.likesServices.likePost(dto, request.user.id);
+    }
+
+    @ApiOperation({ summary: 'Unlike Post' })
+    @Delete('/unlikePost')
+    @UseGuards(JwtAuthGuard)
+    unlikePost(
+        @Body() dto: LikePostDto,
+        @Req() request,
+    ) {
+        return this.likesServices.unlikePost(dto, request.user.id);
     }
 }
