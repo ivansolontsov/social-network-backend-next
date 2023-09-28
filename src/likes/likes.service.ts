@@ -7,11 +7,7 @@ import { Post } from "src/post/post.model";
 
 @Injectable()
 export class LikesService {
-  constructor(
-    @InjectModel(Likes) private likeRepository: typeof Likes,
-    @InjectModel(Post) private postRepository: typeof Post,
-    private jwtService: JwtService
-  ) {}
+  constructor(@InjectModel(Likes) private likeRepository: typeof Likes) {}
 
   async likePost(dto: LikePostDto, userId: number) {
     const isLikeAlreadyExists = await this.likeRepository.findOne({
