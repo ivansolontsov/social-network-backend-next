@@ -37,22 +37,39 @@ export class ChatGateway
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
+
   @UseGuards(JwtWsGuard)
   @SubscribeMessage("joinChat")
   async handleJoinChat(client: Socket, payload: { userId: number }) {
-    // client.join(payload.chatId.toString());
+    const chatInfo = await this.chatService.onJoinRoom({
+      userId: client.data.user.id,
+      targetUserId: payload.userId,
+    });
+    if (!chatInfo)
+      return client.emit(
+        "errorEvent",
+        `Ошибка присоединения к беседе с ${chatInfo.members[0].firstName} + ${chatInfo.members[0].lastName}`
+      );
+
+    await client.join(chatInfo.chatId.toString());
+    client.emit("roomJoined", { ...chatInfo });
+
+    this.logger.log(
+      `user ${client.data.user.email} succesfully connected to ${chatInfo.chatId} room.`
+    );
   }
+
   @UseGuards(JwtWsGuard)
   @SubscribeMessage("sendMessage")
   async handleSendMessage(client: Socket, payload: SendMessageDto) {
-    const response = await this.chatService.onSendMessage({
+    const createdMessage = await this.chatService.onSendMessage({
       chatId: payload.chatId,
       ownerId: client.data.user.id,
-      receiverId: payload.receiverId,
       message: payload.message,
     });
+    if (!createdMessage) console.log("wtf?");
     this.server
       .to(payload.chatId.toString())
-      .emit("newMessage", { ...response });
+      .emit("newMessage", { ...createdMessage });
   }
 }

@@ -1,52 +1,48 @@
 import { InjectModel } from "@nestjs/sequelize";
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Chats } from "./chat.model";
 import { CreateChatDto } from "./dto/chat.dto";
 import { Messages } from "../messages/messages.model";
 import { Op } from "sequelize";
 import { CreateMessageDto } from "../messages/dto/create-message.dto";
+import { User } from "../users/users.model";
 
 @Injectable()
 export class ChatsService {
   constructor(
     @InjectModel(Chats) private chatsRepository: typeof Chats,
-    @InjectModel(Messages) private messagesRepository: typeof Messages
+    @InjectModel(Messages) private messagesRepository: typeof Messages,
+    @InjectModel(User) private userRepository: typeof User
   ) {}
 
-  async onJoinRoom(joinRoomDto: any) {}
-
-  async onSendMessage(createMessageDto: CreateMessageDto) {
-    if (
-      (!createMessageDto.ownerId && !createMessageDto.receiverId) ||
-      createMessageDto.ownerId === createMessageDto.receiverId
-    )
-      throw HttpStatus.BAD_REQUEST;
+  async onJoinRoom(joinRoomDto: { userId: number; targetUserId: number }) {
+    const opponent = await this.userRepository.findByPk(
+      joinRoomDto.targetUserId
+    );
+    if (!opponent) return null;
 
     let chat = await this.chatsRepository.findOne({
       where: {
         users: {
-          [Op.contains]: [
-            createMessageDto.receiverId,
-            createMessageDto.ownerId,
-          ],
+          [Op.contains]: [joinRoomDto.userId, joinRoomDto.targetUserId],
         },
       },
     });
     if (!chat)
       chat = await this.createChat({
-        users: [createMessageDto.ownerId, createMessageDto.receiverId],
+        users: [joinRoomDto.userId, joinRoomDto.targetUserId],
       });
-    const message = await this.createMessage({
-      chatId: chat.id,
-      message: createMessageDto.message,
-      ownerId: createMessageDto.ownerId,
-      receiverId: createMessageDto.receiverId,
-    });
 
     return {
-      chatInstance: chat,
-      messageInstance: message,
+      chatId: chat.id,
+      members: [opponent],
     };
+  }
+
+  async onSendMessage(createMessageDto: CreateMessageDto) {
+    if (!createMessageDto.message) return null;
+    const message = await this.createMessage(createMessageDto);
+    return message;
   }
 
   private async createChat(createChatDto: CreateChatDto) {
@@ -57,11 +53,7 @@ export class ChatsService {
   }
 
   private async createMessage(createMessageDto: CreateMessageDto) {
-    const message = await this.messagesRepository.create({
-      chatId: createMessageDto.chatId,
-      ownerId: createMessageDto.ownerId,
-      message: createMessageDto.message,
-    });
-    return message;
+    const message = await this.messagesRepository.create(createMessageDto);
+    return message.dataValues;
   }
 }
