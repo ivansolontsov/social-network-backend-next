@@ -8,10 +8,10 @@ import { ChatsService } from "./chat.service";
 export class ChatController {
   constructor(private chatsService: ChatsService) {}
 
-  @ApiOperation({ summary: "Placeholder" })
+  @ApiOperation({ summary: "Get Current Chats of User." })
+  @Get("getUserChats")
   @UseGuards(JwtAuthGuard)
-  @Get("createChat")
-  chatTest(@Req() request) {
-    return request.user.id;
+  getUserChats(@Req() request) {
+    return this.chatsService.getUserChats(request.user.id);
   }
 }

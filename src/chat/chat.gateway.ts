@@ -39,17 +39,35 @@ export class ChatGateway
   }
 
   @UseGuards(JwtWsGuard)
-  @SubscribeMessage("joinChat")
+  @SubscribeMessage("joinChatById")
+  async handleJoinChatById(client: Socket, payload: { chatId: number }) {
+    const chatInfo = await this.chatService.joinRoomByChatId(
+      payload.chatId,
+      Number(client.data.user.id)
+    );
+    if (!chatInfo) {
+      client.emit("errorEvent", `Чат не найден!`);
+      return;
+    }
+
+    await client.join(chatInfo.chatId.toString());
+    client.emit("roomJoined", { ...chatInfo });
+
+    this.logger.log(
+      `user ${client.data.user.email} succesfully connected to room.`
+    );
+  }
+
+  @UseGuards(JwtWsGuard)
+  @SubscribeMessage("createChatWithUserId")
   async handleJoinChat(client: Socket, payload: { userId: number }) {
     const chatInfo = await this.chatService.onJoinRoom({
       userId: client.data.user.id,
       targetUserId: payload.userId,
     });
+
     if (!chatInfo)
-      return client.emit(
-        "errorEvent",
-        `Ошибка присоединения к беседе с ${chatInfo.members[0].firstName} + ${chatInfo.members[0].lastName}`
-      );
+      return client.emit("errorEvent", `Ошибка создания чата с пользователем`);
 
     await client.join(chatInfo.chatId.toString());
     client.emit("roomJoined", { ...chatInfo });
@@ -67,8 +85,10 @@ export class ChatGateway
       ownerId: client.data.user.id,
       message: payload.message,
     });
-    if (!createdMessage) console.log("wtf?");
-    this.server
+    if (!createdMessage) {
+      return client.emit("errorEvent", `Не удалось отправить сообщение`);
+    }
+    return this.server
       .to(payload.chatId.toString())
       .emit("newMessage", { ...createdMessage });
   }
