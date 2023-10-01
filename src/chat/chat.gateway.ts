@@ -59,27 +59,9 @@ export class ChatGateway
   }
 
   @UseGuards(JwtWsGuard)
-  @SubscribeMessage("createChatWithUserId")
-  async handleJoinChat(client: Socket, payload: { userId: number }) {
-    const chatInfo = await this.chatService.onJoinRoom({
-      userId: client.data.user.id,
-      targetUserId: payload.userId,
-    });
-
-    if (!chatInfo)
-      return client.emit("errorEvent", `Ошибка создания чата с пользователем`);
-
-    await client.join(chatInfo.chatId.toString());
-    client.emit("roomJoined", { ...chatInfo });
-
-    this.logger.log(
-      `user ${client.data.user.email} succesfully connected to ${chatInfo.chatId} room.`
-    );
-  }
-
-  @UseGuards(JwtWsGuard)
   @SubscribeMessage("sendMessage")
   async handleSendMessage(client: Socket, payload: SendMessageDto) {
+    console.log("newmessage??/");
     const createdMessage = await this.chatService.onSendMessage({
       chatId: payload.chatId,
       ownerId: client.data.user.id,

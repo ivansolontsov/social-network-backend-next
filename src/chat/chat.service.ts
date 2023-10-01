@@ -50,7 +50,7 @@ export class ChatsService {
 
   async joinRoomByChatId(chatId: number, userId: number) {
     const chat = await this.chatsRepository.findByPk(chatId);
-    if (chat.users.includes(userId)) {
+    if (chat && chat.users.includes(userId)) {
       return {
         chatId: chat.id,
         members: [
@@ -67,7 +67,11 @@ export class ChatsService {
     const opponent = await this.userRepository.findByPk(
       joinRoomDto.targetUserId
     );
-    if (!opponent) return null;
+    if (!opponent)
+      throw new HttpException(
+        "Пользователь с таким ID не найден",
+        HttpStatus.NOT_FOUND
+      );
 
     let chat = await this.chatsRepository.findOne({
       where: {
@@ -76,6 +80,7 @@ export class ChatsService {
         },
       },
     });
+
     if (!chat)
       chat = await this.createChat({
         users: [joinRoomDto.userId, joinRoomDto.targetUserId],
@@ -83,7 +88,6 @@ export class ChatsService {
 
     return {
       chatId: chat.id,
-      members: [opponent],
     };
   }
 
