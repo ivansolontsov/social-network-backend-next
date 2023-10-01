@@ -8,22 +8,22 @@ import * as fs from "fs";
 async function start() {
   const PORT = process.env.PORT || 5000;
 
-  // const httpsOptions = {
-  //   key:
-  //     process.env.NODE_ENV == "production" &&
-  //     fs.readFileSync(
-  //       "/etc/letsencrypt/live/vm687554.vps.masterhost.tech/privkey.pem"
-  //     ),
-  //   cert:
-  //     process.env.NODE_ENV == "production" &&
-  //     fs.readFileSync(
-  //       "/etc/letsencrypt/live/vm687554.vps.masterhost.tech/fullchain.pem"
-  //     ),
-  // };
+  const httpsOptions = {
+    key:
+      process.env.NODE_ENV == "production" &&
+      fs.readFileSync(
+        "/etc/letsencrypt/live/socialnetwork.gearboost.eu/privkey.pem"
+      ),
+    cert:
+      process.env.NODE_ENV == "production" &&
+      fs.readFileSync(
+        "/etc/letsencrypt/live/socialnetwork.gearboost.eu/fullchain.pem"
+      ),
+  };
 
   const app = await NestFactory.create(
     AppModule
-    // process.env.NODE_ENV == "production" ? { httpsOptions } : {}
+    process.env.NODE_ENV == "production" ? { httpsOptions } : {}
   );
 
   // Certificate is saved at: /etc/letsencrypt/live/vm687554.vps.masterhost.tech/fullchain.pem
