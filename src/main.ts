@@ -22,7 +22,7 @@ async function start() {
   };
 
   const app = await NestFactory.create(
-    AppModule
+    AppModule,
     process.env.NODE_ENV == "production" ? { httpsOptions } : {}
   );
 
