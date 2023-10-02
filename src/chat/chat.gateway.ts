@@ -61,7 +61,6 @@ export class ChatGateway
   @UseGuards(JwtWsGuard)
   @SubscribeMessage("sendMessage")
   async handleSendMessage(client: Socket, payload: SendMessageDto) {
-    console.log("newmessage??/");
     const createdMessage = await this.chatService.onSendMessage({
       chatId: payload.chatId,
       ownerId: client.data.user.id,
