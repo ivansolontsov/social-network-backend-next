@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "./pipes/validation.pipe";
 import * as cors from "cors";
 import * as fs from "fs";
+import * as process from "process";
 
 async function start() {
   const PORT = process.env.PORT || 5000;
@@ -21,13 +22,16 @@ async function start() {
       ),
   };
 
+  console.log(process.env.NODE_ENV);
+
   const app = await NestFactory.create(
     AppModule,
     process.env.NODE_ENV == "production" ? { httpsOptions } : {}
   );
 
-  // Certificate is saved at: /etc/letsencrypt/live/vm687554.vps.masterhost.tech/fullchain.pem
-  // Key is saved at:         /etc/letsencrypt/live/vm687554.vps.masterhost.tech/privkey.pem
+  // Certificate is saved at: /etc/letsencrypt/live/socialnetwork.gearboost.eu/fullchain.pem
+  // Key is saved at:         /etc/letsencrypt/live/socialnetwork.gearboost.eu/privkey.pem
+  //
 
   app.enableCors({
     origin: true,
