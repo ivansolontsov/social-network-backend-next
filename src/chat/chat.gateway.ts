@@ -39,6 +39,18 @@ export class ChatGateway
   }
 
   @UseGuards(JwtWsGuard)
+  @SubscribeMessage("handleTyping")
+  async handleTyping(
+    client: Socket,
+    payload: { chatId: number; typing: boolean }
+  ) {
+    this.server.to(payload.chatId.toString()).emit("userTyping", {
+      userId: client.data.user.id,
+      typing: payload.typing,
+    });
+  }
+
+  @UseGuards(JwtWsGuard)
   @SubscribeMessage("joinChatById")
   async handleJoinChatById(client: Socket, payload: { chatId: number }) {
     const chatInfo = await this.chatService.joinRoomByChatId(
@@ -46,15 +58,17 @@ export class ChatGateway
       Number(client.data.user.id)
     );
     if (!chatInfo) {
-      client.emit("errorEvent", `Чат не найден!`);
+      client.emit(
+        "errorEvent",
+        `Ошибка при присоединении к комнате вашего чата.`
+      );
       return;
     }
-
     await client.join(chatInfo.chatId.toString());
-    client.emit("roomJoined", { ...chatInfo });
+    this.server.to(payload.chatId.toString()).emit("roomJoined", chatInfo);
 
     this.logger.log(
-      `user ${client.data.user.email} succesfully connected to room.`
+      `user ${client.data.user.email} successfully connected to room.`
     );
   }
 

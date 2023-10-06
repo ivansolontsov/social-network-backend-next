@@ -51,13 +51,12 @@ export class ChatsService {
   async joinRoomByChatId(chatId: number, userId: number) {
     const chat = await this.chatsRepository.findByPk(chatId);
     if (chat && chat.users.includes(userId)) {
+      const users = await this.userRepository.findAll({
+        where: { id: chat.users.find((e) => e !== userId) },
+      });
       return {
         chatId: chat.id,
-        members: [
-          await this.userRepository.findByPk(
-            chat.users.filter((e) => e !== userId).shift()
-          ),
-        ],
+        members: users,
       };
     }
     return null;
