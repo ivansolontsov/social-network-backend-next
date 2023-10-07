@@ -44,7 +44,7 @@ export class ChatGateway
     client: Socket,
     payload: { chatId: number; typing: boolean }
   ) {
-    this.server.to(payload.chatId.toString()).emit("userTyping", {
+    return this.server.to(payload.chatId.toString()).emit("userTyping", {
       userId: client.data.user.id,
       typing: payload.typing,
     });
@@ -65,7 +65,7 @@ export class ChatGateway
       return;
     }
     await client.join(chatInfo.chatId.toString());
-    this.server.to(payload.chatId.toString()).emit("roomJoined", chatInfo);
+    client.emit("roomJoined", chatInfo);
 
     this.logger.log(
       `user ${client.data.user.email} successfully connected to room.`
