@@ -15,11 +15,12 @@ import { FriendsModule } from "./friends/friends.module";
 import { LikesModule } from "./likes/likes.module";
 import * as path from "path";
 import { Likes } from "./likes/likes.model";
-import { UserFriends } from "./friends/user-friends.model";
+import { UserFriends } from "./friends/friends.model";
 import { ChatModule } from "./chat/chat.module";
 import { Chats } from "./chat/chat.model";
 import { Messages } from "./messages/messages.model";
 import { MessagesModule } from "./messages/messages.module";
+import { ChatUsers } from "./chat/chat-users.model";
 
 @Module({
   controllers: [],
@@ -48,8 +49,10 @@ import { MessagesModule } from "./messages/messages.module";
         UserFriends,
         Chats,
         Messages,
+        ChatUsers,
       ],
       autoLoadModels: true,
+      synchronize: true,
     }),
     UsersModule,
     RolesModule,

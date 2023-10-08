@@ -1,34 +1,12 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { ValidationPipe } from "./pipes/validation.pipe";
-import * as cors from "cors";
-import * as fs from "fs";
 import * as process from "process";
 
 async function start() {
   const PORT = process.env.PORT || 5000;
 
-  // const httpsOptions = {
-  //   key:
-  //     process.env.NODE_ENV == "production" &&
-  //     fs.readFileSync(
-  //       "/etc/letsencrypt/live/socialnetwork.gearboost.eu/privkey.pem"
-  //     ),
-  //   cert:
-  //     process.env.NODE_ENV == "production" &&
-  //     fs.readFileSync(
-  //       "/etc/letsencrypt/live/socialnetwork.gearboost.eu/fullchain.pem"
-  //     ),
-  // };
-
-  // console.log(process.env.NODE_ENV);
-
   const app = await NestFactory.create(AppModule);
-
-  // Certificate is saved at: /etc/letsencrypt/live/socialnetwork.gearboost.eu/fullchain.pem
-  // Key is saved at:         /etc/letsencrypt/live/socialnetwork.gearboost.eu/privkey.pem
-  //
 
   app.enableCors({
     origin: true,

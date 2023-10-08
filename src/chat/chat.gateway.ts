@@ -64,6 +64,7 @@ export class ChatGateway
       );
       return;
     }
+
     await client.join(chatInfo.chatId.toString());
     client.emit("roomJoined", chatInfo);
 

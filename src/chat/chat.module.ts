@@ -8,12 +8,13 @@ import { ChatsService } from "./chat.service";
 import { Chats } from "./chat.model";
 import { Messages } from "../messages/messages.model";
 import { User } from "../users/users.model";
+import { ChatUsers } from "./chat-users.model";
 
 @Module({
   controllers: [ChatController],
   providers: [ChatsService, ChatGateway],
   imports: [
-    SequelizeModule.forFeature([Chats, Messages, User]),
+    SequelizeModule.forFeature([Chats, ChatUsers, Messages, User]),
     AuthModule,
     JwtModule,
   ],
