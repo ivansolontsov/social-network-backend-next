@@ -9,8 +9,8 @@
   },
   "production": {
     "username": "postgres",
-    "password": "nvidia1998@qweasd",
-    "database": "postgres",
+    "password": "tdLuWAeMuYDuCFKjcrdd",
+    "database": "social",
     "port": "5432",
     "host": "postgres",
     "dialect": "postgres"
